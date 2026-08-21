@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification</title>
+</head>
+    <script src="js/certification_database.js"></script>
+<body>
+    <!-- Widget Container -->
+<div id="cert-checker-widget">
+  <div class="cert-header">
+    <h3>Verifikasi Sertifikat</h3>
+    <p>Masukkan Nomor/ID Sertifikat secara lengkap untuk mengecek keaslian.</p>
+  </div>
+
+  <div class="cert-search-box">
+    <input type="text" id="cert-input" placeholder="Contoh: CERT-2026-001" onkeyup="checkEnter(event)">
+    <button onclick="searchCertificate()">Cari</button>
+  </div>
+
+  <!-- Area Hasil Pencarian -->
+  <div id="cert-result" class="cert-result-container" style="display: none;"></div>
+</div>
+
+<!-- Styling Widget (CSS) -->
+<style>
+  #cert-checker-widget {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    color: #1a202c;
+  }
+
+  .cert-header h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .cert-header p {
+    margin: 0 0 16px 0;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+
+  .cert-search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .cert-search-box input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .cert-search-box input:focus {
+    border-color: #0f172a;
+  }
+
+  .cert-search-box button {
+    padding: 10px 18px;
+    background-color: #0f172a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .cert-search-box button:hover {
+    background-color: #334155;
+  }
+
+  /* Status Cards */
+  .cert-card {
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .cert-card.success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+  }
+
+  .cert-card.error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+
+  .cert-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #22c55e;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .cert-detail-row {
+    display: flex;
+    justify-content: space-between;
+    text-align: right;
+    padding: 4px 0;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+
+  .cert-detail-row:last-child {
+    border-bottom: none;
+  }
+
+  .cert-label {
+    color: #64748b;
+  }
+
+  .cert-value {
+    font-weight: 600;
+    color: #0f172a;
+  }
+</style>
+
+<!-- Logika & Database Sertifikat (JavaScript) -->
+<script>
+  function searchCertificate() {
+    // Ambil nilai input dan ubah ke huruf kapital untuk pencarian yang konsisten
+    const inputVal = document.getElementById("cert-input").value.trim().toUpperCase();
+    const resultContainer = document.getElementById("cert-result");
+
+    if (!inputVal) {
+      resultContainer.style.display = "block";
+      resultContainer.innerHTML = `
+        <div class="cert-card error">
+          Mohon masukkan ID Sertifikat secara lengkap terlebih dahulu.
+        </div>`;
+      return;
+    }
+
+    // Hanya mencari berdasarkan kesamaan persis (exact match) pada ID
+    const match = certificatesDatabase.find(cert => cert.id.toUpperCase() === inputVal);
+
+    resultContainer.style.display = "block";
+
+    if (match) {
+      resultContainer.innerHTML = `
+        <div class="cert-card success">
+          <span class="cert-badge">✓ SERTIFIKAT VALID</span>
+          <div style="margin-top: 8px;">
+            <div class="cert-detail-row">
+              <span class="cert-label">No. Sertifikat:</span>
+              <span class="cert-value">${match.id}</span>
+            </div>
+            <div class="cert-detail-row">
+              <span class="cert-label">Nama Penerima:</span>
+              <span class="cert-value">${match.name}</span>
+            </div>
+            <div class="cert-detail-row">
+              <span class="cert-label">Program/Pelatihan:</span>
+              <span class="cert-value">${match.course}</span>
+            </div>
+            <div class="cert-detail-row">
+              <span class="cert-label">Tanggal Terbit:</span>
+              <span class="cert-value">${match.date}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      resultContainer.innerHTML = `
+        <div class="cert-card error">
+          ✕ ID Sertifikat <strong>"${inputVal}"</strong> tidak ditemukan. Pastikan Anda memasukkan kode dengan lengkap.
+        </div>
+      `;
+    }
+  }
+
+  // Izinkan pencarian dengan menekan tombol "Enter"
+  function checkEnter(event) {
+    if (event.key === "Enter") {
+      searchCertificate();
+    }
+  }
+</script>
+</body>
+</html>
