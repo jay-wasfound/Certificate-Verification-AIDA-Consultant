@@ -7,8 +7,6 @@
 </head>
     <script src="js/certification_database.js"></script>
     <!-- Panggil File JS dari Repository GitHub via jsDelivr CDN -->
-<script src="https://cdn.jsdelivr.net/gh/jay-wasfound/Certificate-Verification-AIDA-Consultant@main/cert-checker.js"></script>
-<body>
     <!-- Widget Container -->
 <div id="cert-checker-widget">
   <div class="cert-header">
@@ -29,21 +27,20 @@
 <style>
   #cert-checker-widget {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    max-width: 500px;
+    width: 80%;
+    max-width: 100%;
     margin: 0 auto;
     padding: 24px;
     background: #ffffff;
+    box-sizing: border-box;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     color: #1a202c;
   }
-
-  .cert-header h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
+.cert-header h3 {
+  font-size: clamp(18px, 2vw, 24px);
+}
 
   .cert-header p {
     margin: 0 0 16px 0;
@@ -87,12 +84,12 @@
   }
 
   /* Status Cards */
-  .cert-card {
-    padding: 16px;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    line-height: 1.5;
-  }
+.cert-card {
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: 8px;
+  font-size: clamp(14px, 1.2vw, 16px);
+  line-height: 1.6;
+}
 
   .cert-card.success {
     background-color: #f0fdf4;
@@ -116,13 +113,16 @@
     margin-bottom: 8px;
   }
 
-  .cert-detail-row {
-    display: flex;
-    justify-content: space-between;
-    text-align: right;
-    padding: 4px 0;
-    border-bottom: 1px dashed #e2e8f0;
-  }
+.cert-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  text-align: right;
+  padding: 8px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
 
   .cert-detail-row:last-child {
     border-bottom: none;
