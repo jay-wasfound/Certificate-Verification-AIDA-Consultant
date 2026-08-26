@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate Verification</title>
 </head>
+<body>
     <script src="js/certification_database.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jay-wasfound/Certificate-Verification-AIDA-Consultant/js/certification_database.js"></script>
+    
     <!-- Widget Container -->
-<div id="cert-checker-widget">
-  <div class="cert-header">
-    <h3>Verifikasi Sertifikat</h3>
-    <p>Masukkan Nomor/ID Sertifikat secara lengkap untuk mengecek keaslian.</p>
-  </div>
+    <div id="cert-checker-widget">
+      <div class="cert-header">
+        <h3>Verifikasi Sertifikat</h3>
+        <p>Masukkan ID Sertifikat atau Nama Lengkap untuk mengecek keaslian.</p>
+      </div>
 
-  <div class="cert-search-box">
-    <input type="text" id="cert-input" placeholder="Contoh: CERT-2026-001" onkeyup="checkEnter(event)">
-    <button onclick="searchCertificate()">Cari</button>
-  </div>
+      <div class="cert-search-box">
+        <input type="text" id="cert-input" placeholder="Contoh: CERT-2026-001 atau Nama Lengkap" onkeyup="checkEnter(event)">
+        <button onclick="searchCertificate()">Cari</button>
+      </div>
 
-  <!-- Area Hasil Pencarian -->
-  <div id="cert-result" class="cert-result-container" style="display: none;"></div>
-</div>
+      <!-- Area Hasil Pencarian -->
+      <div id="cert-result" class="cert-result-container" style="display: none;"></div>
+    </div>
 
 <!-- Styling Widget (CSS) -->
 <style>
@@ -30,7 +32,7 @@
     width: 70%;
     max-width: 100%;
     margin: 0 auto;
-    padding: 24px;
+    padding: 24px; 
     background: #ffffff;
     box-sizing: border-box;
     border: 1px solid #e2e8f0;
@@ -38,9 +40,11 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     color: #1a202c;
   }
-.cert-header h3 {
-  font-size: clamp(18px, 2vw, 24px);
-}
+
+  .cert-header h3 {
+    font-size: clamp(18px, 2vw, 24px);
+    margin-top: 0;
+  }
 
   .cert-header p {
     margin: 0 0 16px 0;
@@ -84,12 +88,12 @@
   }
 
   /* Status Cards */
-.cert-card {
-  padding: clamp(16px, 2vw, 24px);
-  border-radius: 8px;
-  font-size: clamp(14px, 1.2vw, 16px);
-  line-height: 1.6;
-}
+  .cert-card {
+    padding: clamp(16px, 2vw, 24px);
+    border-radius: 8px;
+    font-size: clamp(14px, 1.2vw, 16px);
+    line-height: 1.6;
+  }
 
   .cert-card.success {
     background-color: #f0fdf4;
@@ -113,16 +117,17 @@
     margin-bottom: 8px;
   }
 
-.cert-detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  text-align: right;
-  padding: 8px 0;
-  width: 100%;
-  box-sizing: border-box;
-}
+  .cert-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    text-align: right;
+    padding: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px dashed #e2e8f0;
+  }
 
   .cert-detail-row:last-child {
     border-bottom: none;
@@ -141,21 +146,31 @@
 <!-- Logika & Database Sertifikat (JavaScript) -->
 <script>
   function searchCertificate() {
-    // Ambil nilai input dan ubah ke huruf kapital untuk pencarian yang konsisten
-    const inputVal = document.getElementById("cert-input").value.trim().toUpperCase();
+    const rawInput = document.getElementById("cert-input").value.trim();
+    const inputVal = rawInput.toUpperCase();
     const resultContainer = document.getElementById("cert-result");
 
-    if (!inputVal) {
+    if (!rawInput) {
       resultContainer.style.display = "block";
       resultContainer.innerHTML = `
         <div class="cert-card error">
-          Mohon masukkan ID Sertifikat secara lengkap terlebih dahulu.
+          Mohon masukkan ID Sertifikat atau Nama Lengkap terlebih dahulu.
         </div>`;
       return;
     }
 
-    // Hanya mencari berdasarkan kesamaan persis (exact match) pada ID
-    const match = certificatesDatabase.find(cert => cert.id.toUpperCase() === inputVal);
+    // Cek apakah input berupa kata tunggal (bukan ID dan bukan nama lengkap)
+    const words = rawInput.split(/\s+/);
+    const isSingleWord = words.length === 1;
+
+    // Pencocokan: 
+    // 1. Matched ID jika persis sama
+    // 2. Matched Nama JIKA input terdiri dari minimal 2 kata DAN cocok persis dengan nama di database
+    const match = certificatesDatabase.find(cert => {
+      const isIdMatch = cert.id && cert.id.toUpperCase() === inputVal;
+      const isFullNameMatch = cert.name && (!isSingleWord && cert.name.toUpperCase() === inputVal);
+      return isIdMatch || isFullNameMatch;
+    });
 
     resultContainer.style.display = "block";
 
@@ -184,15 +199,21 @@
         </div>
       `;
     } else {
+      let errorMessage = `✕ Data <strong>"${rawInput}"</strong> tidak ditemukan. Pastikan memasukkan ID atau Nama Lengkap dengan benar.`;
+      
+      // Beri peringatan khusus jika pengguna hanya memasukkan 1 kata (nama depan/panggilan saja)
+      if (isSingleWord && !rawInput.toUpperCase().startsWith("CERT")) {
+        errorMessage = `✕ Mohon ketik <strong>Nama Lengkap</strong> (minimal 2 kata), bukan hanya nama panggilan.`;
+      }
+
       resultContainer.innerHTML = `
         <div class="cert-card error">
-          ✕ ID Sertifikat <strong>"${inputVal}"</strong> tidak ditemukan. Pastikan Anda memasukkan kode dengan lengkap.
+          ${errorMessage}
         </div>
       `;
     }
   }
 
-  // Izinkan pencarian dengan menekan tombol "Enter"
   function checkEnter(event) {
     if (event.key === "Enter") {
       searchCertificate();
