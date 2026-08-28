@@ -1462,4 +1462,12 @@ const certificatesDatabase = [
     date: "02–03 Desember 2025",
     status: "Valid / Terverifikasi",
   },
+,
+  {
+    id: "151515",
+    name: "halo awkoaowk",
+    course: "materi awkoak",
+    date: "12122004",
+    status: "Valid / Terverifikasi"
+  }
 ];
