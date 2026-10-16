@@ -1428,20 +1428,6 @@ const certificatesDatabase = [
     "status": "Valid / Terverifikasi"
   },
   {
-    "id": "151515",
-    "name": "halo awkoaowk",
-    "course": "materi awkoak",
-    "date": "12122004",
-    "status": "Valid / Terverifikasi"
-  },
-  {
-    "id": "161616",
-    "name": "davina halo",
-    "course": "risk management",
-    "date": "16 oktober 2026",
-    "status": "Valid / Terverifikasi"
-  },
-  {
     "id": "344/AIDA/BBI/VIII/2026",
     "name": "Desy Rizki Anggrainy",
     "course": "Behavioral Based Interview (BBI)",
