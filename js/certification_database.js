@@ -1,6 +1,13 @@
 const certificatesDatabase = [
   {
     "id": "074/AIDA/CTF/IV/2025",
+    "name": "Saya Hendri",
+    "course": "Competency Enhancement Training for Facilitators and Trainer",
+    "date": "28–30 April 2025",
+    "status": "Valid / Terverifikasi"
+  },
+  {
+    "id": "074/AIDA/CTF/IV/2025",
     "name": "Agus Riyanto",
     "course": "Competency Enhancement Training for Facilitators and Trainer",
     "date": "28–30 April 2025",
