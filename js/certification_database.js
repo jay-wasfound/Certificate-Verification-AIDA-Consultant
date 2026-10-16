@@ -1443,7 +1443,7 @@ const certificatesDatabase = [
   },
   {
     "id": "344/AIDA/BBI/VIII/2026",
-    "name": "Desy Rizki Anggrainy, S.Psi",
+    "name": "Desy Rizki Anggrainy",
     "course": "Behavioral Based Interview (BBI)",
     "date": "9 August 2026",
     "status": "Valid / Terverifikasi"
